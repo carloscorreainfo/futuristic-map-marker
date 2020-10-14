@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
+    <script src="node_modules/leaflet/dist/leaflet.js"></script>
+    <script src="gas_stations_coordinates.js"></script>
+    <style>
+
+      /* define Marker animations */
+      @keyframes glow-effect {
+        from {
+          text-shadow: 0 0 30px #38f, 0 0 30px #38f, 0 0 30px #38f,
+            0 0 30px #38f;
+          color: #9bf;
+        }
+        to {
+          text-shadow: 0 0 0px #38f, 0 0 0px #38f, 0 0 0px #38f, 0 0 0px #38f;
+          color: #38f;
+        }
+      }
+      @keyframes fade-out-effect {
+        100% {
+          opacity: 0;
+        }
+      }
+      /* override Leaflet default styles */
+      div.leaflet-div-icon {
+        background: transparent;
+        border: none;
+      }
+      /* define custom Marker appearance */
+      div.leaflet-div-icon:before {
+        font-size: 14px;
+        content: "\2B22";
+        animation: glow-effect 1.5s ease 1 forwards,
+          fade-out-effect 0.2s 3s ease-in-out 1 forwards;
+      }
+      /* add some styles to look better */
+      body {
+        background-color: #191a1a;
+      }
+      #map {
+        width: 650px;
+        height: 300px;
+        margin: 0 auto;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+  <script>
+
+    // initialize Leaflet map
+    var map = L.map("map", {
+      dragging: true,
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([39.75621, -98.1], 4);
+
+    // append tile layer with black style
+    var defTileLayer = L.tileLayer(
+      "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
+      {
+        attribution: 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: "mapbox/dark-v9",
+        maxZoom: 18,
+      }
+    ).addTo(map);
+
+    // pick random coordinates from file and show his position
+    const st_total = stations.length;
+    setInterval(() => {
+      const index = Math.floor(Math.random() * st_total);
+      L.marker(stations[index], {
+        draggable: false,
+        icon: L.divIcon(),
+      }).addTo(map);
+    }, 100);
+
+  </script>
+</html>
